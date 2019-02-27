@@ -4,12 +4,11 @@
 double integrate(double a, double b, int n)
 {
     double sum=0;
-    double init, end, x, step;
-    int j;
-    step = (b-a)/n;
-    init = cos(a)*exp(-a*a)/2;
-    end = cos(b)*exp(-b*b)/2;
-    for (j=1;j<=n-1;j++)
+    double step = (b-a)/n;
+    double init = cos(a)*exp(-a*a)/2;
+    double end = cos(b)*exp(-b*b)/2;
+    double x;
+    for (int j=1;j<=n-1;j++)
     {
         x = j*step+a;
         sum += cos(x)*exp(-x*x);
@@ -26,7 +25,7 @@ int main()
   std::cout << "N   " << "Integral" << std::endl;
   for(int i=1;i<100;i++)
   {
-    std::cout << i << "   " <<  integrate(-1,3,i) << std::endl;
+    std::cout << i << "   " <<   1.34638795680345037669816-integrate(-1,3,i) << std::endl;
   }
   return 0;
 }
