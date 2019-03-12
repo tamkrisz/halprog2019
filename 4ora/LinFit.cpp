@@ -20,7 +20,7 @@ std::array<double, 2> LinFit(std::vector<double> X, std::vector<double> Y, std::
     result[0] = b; //meredekség
     result[1] = m; //tengelymetszet
     return result;
-} 
+};
 
 
 int main()
