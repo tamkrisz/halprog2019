@@ -2,8 +2,6 @@
 #include "vec.h"
 
 
-
-
 int main() {
     Vector2d<int> intV1 = {1, 2};
     Vector2d<int> intV2 = {3, 5};
@@ -47,13 +45,13 @@ int main() {
 
     //-=
     std::cout << std::endl <<  "-= operator test" << std::endl;
-    std::cout << "(" << intV1.x << " " << intV1.y << ") + "; 
+    std::cout << "(" << intV1.x << " " << intV1.y << ") - "; 
     std::cout << "(" << intV2.x << " " << intV2.y << ") = "; 
-    intV1 += intV2;
+    intV1 -= intV2;
     std::cout << "(" << intV1.x << " " << intV1.y << ")" << std::endl; 
-    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ") + "; 
+    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ") - "; 
     std::cout << "(" << doubleV2.x << " " << doubleV2.y << ") = "; 
-    doubleV1 += doubleV2;
+    doubleV1 -= doubleV2;
     std::cout << "(" << doubleV1.x << " " << doubleV1.y << ")" << std::endl; 
 
     //In/out
