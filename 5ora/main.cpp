@@ -3,56 +3,44 @@
 
 
 int main() {
-    Vector2d<int> intV1 = {1, 2};
-    Vector2d<int> intV2 = {3, 5};
-    Vector2d<double> doubleV1 = {3.0, 4.0};
-    Vector2d<double> doubleV2 = {1.5, 2.5};
+    Vector2d<double> V1 = {3.0, 4.0};
+    Vector2d<double> V2 = {1.5, 2.5};
+    Vector2d<double> V1copy = {3.0, 4.0};
+    //+-
+    Vector2d<double> V1addV2res = {4.5, 6.5};
+    Vector2d<double> V1subV2res = {1.5, 1.5};
     
-
-    //+/-
-    auto w = intV1 + intV2;
-    auto w2 = doubleV1 + doubleV2;
-    std::cout << "+ operator test" << std::endl;
-    std::cout << w.x << " " << w.y << std::endl;
-    std::cout << w2.x << " " << w2.y << std::endl;
-    auto w3 = intV1 - intV2;
-    auto w4 = doubleV1 - doubleV2;
-    std::cout << "- operator test" << std::endl;
-    std::cout << w3.x << " " << w3.y << std::endl;
-    std::cout << w4.x << " " << w4.y << std::endl;
-
     //dot
-    std::cout << "dot product test" << std::endl;
-    std::cout << doubleV1 << std::endl;
-    std::cout << dot(intV1,intV2) << std::endl;
-    
-    
-    std::cout << "length(double) = " << length(doubleV2) << std::endl;
-    std::cout << "sqlength(double) = " << sqlength(doubleV2) << std::endl;
-    std::cout << "length(int) = " << length(intV1) << std::endl;
-    std::cout << "sqlength(int) = " << sqlength(intV1) << std::endl;
+    double dotV1V2 = 14.5;
+    double lengthV1 = 5;
+    double sqlengthV1 = 25;
 
-    //+=
-    std::cout << std::endl <<  "+= operator test" << std::endl;
-    std::cout << "(" << intV1.x << " " << intV1.y << ") + "; 
-    std::cout << "(" << intV2.x << " " << intV2.y << ") = "; 
-    intV1 += intV2;
-    std::cout << "(" << intV1.x << " " << intV1.y << ")" << std::endl; 
-    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ") + "; 
-    std::cout << "(" << doubleV2.x << " " << doubleV2.y << ") = "; 
-    doubleV1 += doubleV2;
-    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ")" << std::endl; 
 
-    //-=
-    std::cout << std::endl <<  "-= operator test" << std::endl;
-    std::cout << "(" << intV1.x << " " << intV1.y << ") - "; 
-    std::cout << "(" << intV2.x << " " << intV2.y << ") = "; 
-    intV1 -= intV2;
-    std::cout << "(" << intV1.x << " " << intV1.y << ")" << std::endl; 
-    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ") - "; 
-    std::cout << "(" << doubleV2.x << " " << doubleV2.y << ") = "; 
-    doubleV1 -= doubleV2;
-    std::cout << "(" << doubleV1.x << " " << doubleV1.y << ")" << std::endl; 
+    //+operator test
+    auto w2 = V1 + V2;
+    if(abs(w2.x - V1addV2res.x) > 0.00000001 || abs(w2.y - V1addV2res.y) > 0.00000001) std::cout << "+operator failed" << std::endl;
+
+    //-operator test
+    w2 = V1 - V2;
+    if(abs(w2.x - V1subV2res.x) > 0.00000001 || abs(w2.y - V1subV2res.y) > 0.00000001) std::cout << "-operator failed" << std::endl;
+
+    
+
+
+    //dot test
+    if(abs(dot(V1,V2) - dotV1V2) > 0.00000001) std::cout << "dot failed" << std::endl;
+
+    //length
+    if(abs(length(V1) - lengthV1) > 0.00000001) std::cout << "length failed" << std::endl;
+    //sqlength
+    if(abs(sqlength(V1) - sqlengthV1) > 0.00000001) std::cout << "sqlength failed" << std::endl;
+    
+    //+= test
+    V1+=V2;
+    if((abs(V1.x - V1addV2res.x) > 0.00000001) || (abs(V1.y - V1addV2res.y) >0.00000001)) std::cout << "+=operator failed" << std::endl;
+    //-= test
+    V1copy-=V2;
+    if((abs(V1copy.x - V1subV2res.x) > 0.00000001) || (abs(V1copy.y - V1subV2res.y) > 0.00000001)) std::cout << "-=operator failed" << std::endl;
 
     //In/out
     std::cout << std::endl << "Input/output test:" << std::endl;
