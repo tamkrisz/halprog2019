@@ -15,13 +15,13 @@ struct Vector2d
 };
 
 template<typename T>
-Vector2d<T> operator-( Vector2d<T> const& a, Vector2d<T> const& b )
+Vector2d<T> operator+( Vector2d<T> const& a, Vector2d<T> const& b )
 {
     return Vector2d<T>{ a.x + b.x, a.y + b.y };
 };
 
 template<typename T>
-Vector2d<T> operator+( Vector2d<T> const& a, Vector2d<T> const& b )
+Vector2d<T> operator-( Vector2d<T> const& a, Vector2d<T> const& b )
 {
     return Vector2d<T>{ a.x - b.x, a.y - b.y };
 };
