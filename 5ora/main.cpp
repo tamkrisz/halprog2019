@@ -62,8 +62,10 @@ int main() {
     //* operator
     Vector2d<double> c = {1.0,2.0};
     Vector2d<double> d = 10.0*c;
-    if(std::abs(10*c.x -d.x) > diff || std::abs(10*c.y - d.y) > diff) std::cout << "* scalar failed" << std::endl;
-
+    if(std::abs(10*c.x - d.x) > diff || std::abs(10*c.y - d.y) > diff) std::cout << "* scalar failed" << std::endl;
+    // /operator
+    d = c/10.0;
+    if(std::abs(c.x/10 - d.x) > diff || std::abs(c.y/10 - d.y) > diff) std::cout << "* scalar failed" << std::endl;
     //In/out
     std::cout << std::endl << "Input/output test:" << std::endl;
     Vector2d<double> V{};
