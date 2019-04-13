@@ -55,14 +55,14 @@ int main() {
     
     auto V1old = V1;
     V1*=10;
-    if(std::abs(10*V1old.x -V1.x) > diff || std::abs(10*V1old.y - V1.y) > diff) std::cout << "*= scalar failed (left)" << std::endl;
+    if(std::abs(10*V1old.x -V1.x) > diff || std::abs(10*V1old.y - V1.y) > diff) std::cout << "*= scalar failed" << std::endl;
     V1/=10;
     if(std::abs(V1old.x -V1.x) > diff || std::abs(V1old.y - V1.y) > diff) std::cout << "/= scalar failed" << std::endl;
 
     //* operator
     Vector2d<double> c = {1.0,2.0};
     Vector2d<double> d = 10.0*c;
-    if(std::abs(10*c.x -d.x) > diff || std::abs(10*c.y - d.y) > diff) std::cout << "* scalar failed (left)" << std::endl;
+    if(std::abs(10*c.x -d.x) > diff || std::abs(10*c.y - d.y) > diff) std::cout << "* scalar failed" << std::endl;
 
     //In/out
     std::cout << std::endl << "Input/output test:" << std::endl;
