@@ -3,19 +3,7 @@
 int main()
 {
 	auto err = [](auto str){ std::cout << "Matrix.h error in: " << str << "\n"; std::exit(-1); };
-/*
-	Matrix<double> k = {3,
-						{
-						3.1,2.5,4.2,
-					    5.5,2.1,6.5,
-						1.2,2.3,3.3
-						}};
 
-	std::cout << "a(0,0) = " << a(0,0) << std::endl;
-	std::cout << a << std::endl;
-	a *= 10;
-	std::cout << a;
-*/
 	//Test default constructor:
 	{
 		Matrix<double> u;
@@ -56,15 +44,7 @@ int main()
 		if( ++ ++ ++ ++(b.begin()) != b.end() )         { err("move constructor test [begin + 3 == end]");     }
 		if( ++ ++ ++ ++(b.cbegin()) != b.cend() )       { err("move constructor test [cbegin + 3 == cend]");   }
 	}
-//NOT READY YET
-/*
-	//Test indexible function constructor:
-	{
-		Matrix<int> a{ [](int i){ return 100*i*i+20*i+5; }, 4};
-		if(a.size() != 4)                                         { err("constructor from indexible test [size]");     }
-		if(a[0] != 5 || a[1] != 125 || a[2] != 445 || a[3] != 965){ err("constructor from indexible test [elements]"); }
-	}
-*/
+
 	//Test assignment:
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
@@ -110,7 +90,7 @@ int main()
 	    a += 2;
 		if(a.size() != 4)                              { err("+= test [size]");         }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("+= test [value]");        }
+		if(length(a) > 1e-14)                    { err("+= test [value]");        }
 	}
 	//Test -=:
 	{
@@ -119,7 +99,7 @@ int main()
 	    a -= 2;
 		if(a.size() != 4)                              { err("-= test [size]");         }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("-= test [value]");        }
+		if(length(a) > 1e-14)                    { err("-= test [value]");        }
 	}
 	//Test *=:
 	{
@@ -128,7 +108,7 @@ int main()
 		a *= 2.0;
 		if(a.size() != 4)          { err("*= test [size]");  }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("*= test [value]");        }
+		if(length(a) > 1e-14)                    { err("*= test [value]");        }
 	}
 	//Test /=:
 	{
@@ -137,7 +117,7 @@ int main()
 		a /= 2.0;
 		if(a.size() != 4)          { err("/= test [size]");  }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("/= test [value]");        }
+		if(length(a) > 1e-14)                    { err("/= test [value]");        }
 	}
 	
 	//Add, sub, mult, div by matrix
@@ -150,7 +130,7 @@ int main()
 		if(b.size() != 4)                              { err("+= test [src size]");     }
 		if(b[0] != 7.1 || b[1] != 15.2 || b[2] != 11.3){ err("+= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("+= test [value]");        }
+		if(length(a) > 1e-14)                    { err("+= test [value]");        }
 	}
 	//Test -=:
 	{
@@ -162,7 +142,7 @@ int main()
 		if(b.size() != 4)                            { err("-= test [src size]");     }
 		if(b[0] != 1.0 || b[1] != 2.0 || b[2] != 3.0 || b[3] != 1.2){ err("-= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("-= test [value]");        }
+		if(length(a) > 1e-14)                    { err("-= test [value]");        }
 	}
 
 	//Test *=:
@@ -188,7 +168,7 @@ int main()
 		if(b.size() != 4)                            { err("/= test [src size]");     }
 		if(b[0] != 1.0 || b[1] != 2.0 || b[2] != 3.0 || b[3] != 4.0){ err("/= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-15)                    { err("/= test [value]");        }
+		if(length(a) > 1e-14)                    { err("/= test [value]");        }
 	}
 
 	//Add, sub, mult, div by matrix #2
@@ -202,7 +182,7 @@ int main()
 		if(b.size() != 4)                              { err("+ test [src size]");     }
 		if(c.size() != 4)                              { err("+ test [result size]");     }
 		c -= ref;
-		if(length(c) > 1e-15)                    { err("+ test [value]");        }
+		if(length(c) > 1e-14)                    { err("+ test [value]");        }
 	}
 	//Test -:
 	{
@@ -215,7 +195,7 @@ int main()
 		if(b.size() != 4)                            { err("- test [src size]");     }
 		if(c.size() != 4)                            { err("- test [src size]");     }
 		c -= ref;
-		if(length(c) > 1e-15)                    { err("- test [value]");        }
+		if(length(c) > 1e-14)                    { err("- test [value]");        }
 	}
 
 	//Test *:
@@ -243,17 +223,8 @@ int main()
 		if(b.size() != 4)                            { err("/ test [src size]");     }
 		if(c.size() != 4)                            { err("/ test [src size]");     }
 		c -= ref;
-		if(length(c) > 1e-15)                    { err("/ test [value]");        }
+		if(length(c) > 1e-14)                    { err("/ test [value]");        }
 	}
-
-
-	Matrix<double> a = {2, {3.1, 5.2, 1.0, 2.2}};
-	Matrix<double> b   = {2, {5.0, 2.0, 3.0, 4.0}};
-	Matrix<double> c;
-	std::cout << a;
-	a = a*b;
-	std::cout << a;
-	//matrix szorzas meg vissza
-	//multiplication rendesen
+	
 	return 0;
 }
