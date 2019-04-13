@@ -111,7 +111,7 @@ class Matrix
 		return *this;
 	}
 
-	//Add, sub, mult, div by other matrix
+	//Add, sub, mult, div with other matrix
 	Matrix<T>& operator*= (Matrix<T> const& cpy)
 	{
 		std::vector<T> res(cpy.dim());
@@ -289,6 +289,28 @@ Matrix<T> operator*( Matrix<T> const& v1, Matrix<T> const& v2 )
 	return result;
 }
 
+template<typename T>
+Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T> const& v2 )
+{
+	std::vector<T> res(v2.dim());
+	int N = v2.dim();
+	for(int i=0; i<N;i++)
+	{
+		for(int j=0; j<N;j++)
+		{
+			for(int k=0; k<N;k++)
+			{
+				res[j] += v1[N*i + k] * v2[N*k + j];
+			}
+		}
+		for(int l=0; l<N;l++)
+		{
+			v1[N*i + l] = res[l];
+			res[l] = 0;
+		}
+	}
+	return std::move(v1);
+}
 
 template<typename T>
 std::ostream& operator<< (std::ostream& o, const Matrix<T>& m)
