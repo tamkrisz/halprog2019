@@ -45,6 +45,11 @@ Vector2d<T> operator*(T const& a, Vector2d<T> const& b )
     return Vector2d<T>{ a*b.x, a*b.y };
 };
 
+template<typename T>
+Vector2d<T> operator/(Vector2d<T> const& b, T const& a  )
+{
+    return Vector2d<T>{ b.x/a, b.y/a };
+};
 //output
 template<typename T>
 std::ostream& operator<<( std::ostream& o, Vector2d<T> const& v )
