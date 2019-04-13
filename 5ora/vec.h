@@ -12,7 +12,20 @@ struct Vector2d
         x -= v.x; y -= v.y;
         return *this;
     };
+    Vector2d<T>& operator*=( T const& a )
+    {
+        x *= a; y *= a;
+        return *this;
+    };
+    Vector2d<T>& operator/=( T const& a )
+    {
+        x /= a; y /= a;
+        return *this;
+    };
+
 };
+
+
 
 template<typename T>
 Vector2d<T> operator+( Vector2d<T> const& a, Vector2d<T> const& b )
@@ -27,12 +40,20 @@ Vector2d<T> operator-( Vector2d<T> const& a, Vector2d<T> const& b )
 };
 
 template<typename T>
+Vector2d<T> operator*(T const& a, Vector2d<T> const& b )
+{
+    return Vector2d<T>{ a*b.x, a*b.y };
+};
+
+//output
+template<typename T>
 std::ostream& operator<<( std::ostream& o, Vector2d<T> const& v )
 {
     o << v.x << " " << v.y;
     return o;
 };
 
+//input
 template <typename T>
 std::istream& operator>>( std::istream& i, Vector2d<T> & v )
 {
@@ -56,7 +77,12 @@ T sqlength(Vector2d<T> const& a)
 template<typename T>
 T length(Vector2d<T> const& a)
 {
-    T result = sqrt(a.x*a.x + a.y*a.y);
-    return result;
+    return sqrt(a.x*a.x + a.y*a.y);;
 };
 
+template<typename T>
+Vector2d<T> normalize(Vector2d<T> const& a)
+{
+    T length = sqrt(a.x*a.x + a.y*a.y);
+    return Vector2d<T>{ a.x/length, a.y/length};
+};
