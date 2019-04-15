@@ -20,7 +20,7 @@ std::array<double, 3> LinFit(std::vector<double> const& X, std::vector<double> c
     const double R2 = 1 - Sres/Stot;
     std::array<double, 3> result = {b, m, R2};
     return result;
-};
+}
 
 int main()
 {
