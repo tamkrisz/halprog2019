@@ -1,4 +1,8 @@
 #include "matrix.h"
+#include <sstream>
+#include <string>
+
+
 
 int main()
 {
@@ -249,5 +253,20 @@ int main()
 		if(norm_of_elements(c) > 1e-14)                    { err("/ test [value]");        }
 	}
 	
+	// << test
+	{
+		Matrix<double> ref = {2, {3.1, 5.2, 1.0, 2.2}};
+		std::stringstream ss;
+		std::string temp;
+		ss << ref;
+		for(auto i=0;i<ref.size();i++)
+		{
+			std::getline(ss, temp, ' ');
+			if(std::stod(temp) != ref[i]) err("<< test");
+		}
+	}
+
+	//>> test
+
 	return 0;
 }
