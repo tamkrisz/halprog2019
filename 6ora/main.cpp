@@ -83,44 +83,25 @@ int main()
 		if(c[0] != 3.1 || c[1] != 5.2 || c[2] != 9.3 || c[3] != 2.2){ err("self assignment test [elements]"); }
 	}
 
-	//Add, sub, mult, div by scalar
+	//Test size initialization
 	{
-		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
-		Matrix<double> ref = {2, {5.1, 7.2, 11.3, 4.2}};
-	    a += 2;
-		if(a.size() != 4)                              { err("+= test [size]");         }
-		a -= ref;
-		if(length(a) > 1e-14)                    { err("+= test [value]");        }
+		Matrix<double> c(2);
+		if(c.size() != 4) 	{ err("Size initialization [size]"); }
+		if(c.dim() != 2) 	{ err("Size initialization [size]"); }
 	}
-	//Test -=:
-	{
-		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
-		Matrix<double> ref = {2, {1.1, 3.2, 7.3, 0.2}};
-	    a -= 2;
-		if(a.size() != 4)                              { err("-= test [size]");         }
-		a -= ref;
-		if(length(a) > 1e-14)                    { err("-= test [value]");        }
-	}
-	//Test *=:
+
+	//Test *= scalar:
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
 		Matrix<double> ref = {2, {6.2, 10.4, 18.6, 4.4}};
 		a *= 2.0;
 		if(a.size() != 4)          { err("*= test [size]");  }
 		a -= ref;
-		if(length(a) > 1e-14)                    { err("*= test [value]");        }
-	}
-	//Test /=:
-	{
-		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
-		Matrix<double> ref = {2, {1.55, 2.6,  4.65, 1.1}};
-		a /= 2.0;
-		if(a.size() != 4)          { err("/= test [size]");  }
-		a -= ref;
-		if(length(a) > 1e-14)                    { err("/= test [value]");        }
+		if(norm_of_elements(a) > 1e-14)                    { err("*= test [value]");        }
 	}
 	
-	//Add, sub, mult, div by matrix
+	//Add, sub, mult by matrix
+	//Test +=:
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
 		Matrix<double> b   = {2, {7.1, 15.2, 11.3, 1.0}};
@@ -128,9 +109,8 @@ int main()
 	    a += b;
 		if(a.size() != 4)                              { err("+= test [size]");         }
 		if(b.size() != 4)                              { err("+= test [src size]");     }
-		if(b[0] != 7.1 || b[1] != 15.2 || b[2] != 11.3){ err("+= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-14)                    { err("+= test [value]");        }
+		if(norm_of_elements(a) > 1e-14)                    { err("+= test [value]");        }
 	}
 	//Test -=:
 	{
@@ -140,9 +120,8 @@ int main()
 		a -= b;
 		if(a.size() != 4)                            { err("-= test [size]");         }
 		if(b.size() != 4)                            { err("-= test [src size]");     }
-		if(b[0] != 1.0 || b[1] != 2.0 || b[2] != 3.0 || b[3] != 1.2){ err("-= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-14)                    { err("-= test [value]");        }
+		if(norm_of_elements(a) > 1e-14)                    { err("-= test [value]");        }
 	}
 
 	//Test *=:
@@ -153,25 +132,12 @@ int main()
 		a *= b;
 		if(a.size() != 4)                            { err("*= test [size]");         }
 		if(b.size() != 4)                            { err("*= test [src size]");     }
-		if(b[0] != 5.0 || b[1] != 2.0 || b[2] != 3.0 || b[3] != 4.0){ err("*= test [src elements]"); }
 		a -= ref;
-		if(length(a) > 1e-14)                    { err("*= test [value]");        }
+		if(norm_of_elements(a) > 1e-14)                    { err("*= test [value]");        }
 	}
 
-	//Test /=:
-	{
-		Matrix<double> a = {2, {3.1, 5.2, 9.0, 16.0}};
-		Matrix<double> b   = {2, {1.0, 2.0, 3.0, 4.0}};
-		Matrix<double> ref = {2, {3.1, 2.6, 3.0, 4.0}};
-		a /= b;
-		if(a.size() != 4)                            { err("/= test [size]");         }
-		if(b.size() != 4)                            { err("/= test [src size]");     }
-		if(b[0] != 1.0 || b[1] != 2.0 || b[2] != 3.0 || b[3] != 4.0){ err("/= test [src elements]"); }
-		a -= ref;
-		if(length(a) > 1e-14)                    { err("/= test [value]");        }
-	}
 
-	//Add, sub, mult, div by matrix #2
+	//Add, sub, mult by matrix #2
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 9.3, 2.2}};
 		Matrix<double> b   = {2, {7.1, 15.2, 11.3, 1.0}};
@@ -182,7 +148,7 @@ int main()
 		if(b.size() != 4)                              { err("+ test [src size]");     }
 		if(c.size() != 4)                              { err("+ test [result size]");     }
 		c -= ref;
-		if(length(c) > 1e-14)                    { err("+ test [value]");        }
+		if(norm_of_elements(c) > 1e-14)                    { err("+ test [value]");        }
 	}
 	//Test -:
 	{
@@ -195,10 +161,10 @@ int main()
 		if(b.size() != 4)                            { err("- test [src size]");     }
 		if(c.size() != 4)                            { err("- test [src size]");     }
 		c -= ref;
-		if(length(c) > 1e-14)                    { err("- test [value]");        }
+		if(norm_of_elements(c) > 1e-14)                    { err("- test [value]");        }
 	}
 
-	//Test *:
+	//Test matrix *:
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 1.0, 2.2}};
 		Matrix<double> b   = {2, {5.0, 2.0, 3.0, 4.0}};
@@ -209,21 +175,43 @@ int main()
 		if(b.size() != 4)                            { err("* test [src size]");     }
 		if(c.size() != 4)                            { err("* test [src size]");     }
 		c -= ref;
-		if(length(c) > 1e-14)                    { err("* test [value]");        }
+		if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
+	}
+	
+	//Test left *:
+	{
+		Matrix<double> a = {2, {3.1, 5.2, 1.0, 2.2}};
+		Matrix<double> ref   = {2, {6.2, 10.4, 2.0, 4.4}};
+		Matrix<double> c;
+	    c = 2.0 * a;
+		if(a.size() != 4)                            { err("* lefttest [size]");         }
+		if(c.size() != 4)                            { err("* left test [src size]");     }
+		c -= ref;
+		if(norm_of_elements(c) > 1e-14)                    { err("* left test [value]");        }
+	}
+	
+	//Test right *:
+	{
+		Matrix<double> a = {2, {3.1, 5.2, 1.0, 2.2}};
+		Matrix<double> ref   = {2, {6.2, 10.4, 2.0, 4.4}};
+		Matrix<double> c;
+	    c = a * 2.0;
+		if(a.size() != 4)                            { err("* right test [size]");         }
+		if(c.size() != 4)                            { err("* right test [src size]");     }
+		c -= ref;
+		if(norm_of_elements(c) > 1e-14)                    { err("* right test [value]");        }
 	}
 
-	//Test /:
+	//Test /
 	{
-		Matrix<double> a = {2, {3.1, 5.2, 9.0, 16.0}};
-		Matrix<double> b   = {2, {1.0, 2.0, 3.0, 4.0}};
-		Matrix<double> ref = {2, {3.1, 2.6, 3.0, 4.0}};
+		Matrix<double> ref = {2, {3.1, 5.2, 1.0, 2.2}};
+		Matrix<double> a   = {2, {6.2, 10.4, 2.0, 4.4}};
 		Matrix<double> c;
-	    c = a / b;
+	    c = a / 2.0;
 		if(a.size() != 4)                            { err("/ test [size]");         }
-		if(b.size() != 4)                            { err("/ test [src size]");     }
 		if(c.size() != 4)                            { err("/ test [src size]");     }
 		c -= ref;
-		if(length(c) > 1e-14)                    { err("/ test [value]");        }
+		if(norm_of_elements(c) > 1e-14)                    { err("/ test [value]");        }
 	}
 	
 	return 0;
