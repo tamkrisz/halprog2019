@@ -24,7 +24,6 @@ namespace detail
 //Common lambdas:
 inline auto add = [](auto const& x, auto const& y){ return x + y; };
 inline auto sub = [](auto const& x, auto const& y){ return x - y; };
-inline auto divide = [](auto const& x, auto const& y){ return x / y; };
 inline auto mul = [](auto const& x, auto const& y){ return x * y; };
 
 template<typename T>
@@ -84,28 +83,21 @@ class Matrix
 		if(data.size() > N*N) { std::cout << "Error: more values than expected!" << std::endl; std::exit(-1); }
 	}
 
-	//Add, sub, mult, div by scalar
-	//mult
+
+	//scalar mul
 	Matrix<T>& operator*= (T const& scl)
 	{
 		detail::transform_Matrix1(*this, *this, [=](T const& x){ return x * scl;} );
 		return *this;
 	}
-	//add
-	Matrix<T>& operator+= (T const& scl)
+	//scalar div
+	Matrix<T>& operator/= (T const& scl)
 	{
-		detail::transform_Matrix1(*this, *this, [=](T const& x){ return x + scl;} );
+		detail::transform_Matrix1(*this, *this, [=](T const& x){ return x / scl;} );
 		return *this;
 	}
-	//sub
-	Matrix<T>& operator-= (T const& scl)
-	{
-		detail::transform_Matrix1(*this, *this, [=](T const& x){ return x - scl;} );
-		return *this;
-	}
-	//div
 
-	//Add, sub, mult, div with other matrix
+	//matrix mul
 	Matrix<T>& operator*= (Matrix<T> const& cpy)
 	{
 		T temp = 0;
@@ -129,13 +121,13 @@ class Matrix
 		}
 		return *this;
 	}
-
+	//matrix add
 	Matrix<T>& operator+= (Matrix<T> const& cpy)
 	{
 		detail::transform_Matrix2(*this, cpy, *this, add);
 		return *this;
 	}
-
+	//matrix sub
 	Matrix<T>& operator-= (Matrix<T> const& cpy)
 	{
 		detail::transform_Matrix2(*this, cpy, *this, sub);
