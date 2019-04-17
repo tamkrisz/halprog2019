@@ -61,6 +61,7 @@ int main()
 		Matrix<double> c = {2, {3.1, 5.2, 9.3, 2.2}};
 		c = c;
 		if(c.size() != 4)                            { err("self assignment test [size]");     }
+		if(c.dim() != 2)                            { err("self assignment test [dim]");     }
 		if(c[0] != 3.1 || c[1] != 5.2 || c[2] != 9.3 || c[3] != 2.2){ err("self assignment test [elements]"); }
 	}
 
@@ -72,6 +73,7 @@ int main()
 		if(a.begin() != a.end())                     { err("assignment test [src begin == src end]"); }
 		if(a.size() != 0)                            { err("assignment test [src size]");             }
 		if(b.size() != 4)                            { err("assignment test [size]");                 }
+		if(b.dim() != 2)                            { err("assignment test [dim]");                 }
 		if(b[0] != 3.1 || b[1] != 5.2 || b[2] != 9.3 || b[3] != 2.2){ err("assignment test [elements]");             }
 	}
 
@@ -80,6 +82,7 @@ int main()
 		Matrix<double> c = {2, {3.1, 5.2, 9.3, 2.2}};
 		c = std::move(c);
 		if(c.size() != 4)                            { err("self assignment test [size]");     }
+		if(c.dim() != 2)                            { err("self assignment test [dim]");     }
 		if(c[0] != 3.1 || c[1] != 5.2 || c[2] != 9.3 || c[3] != 2.2){ err("self assignment test [elements]"); }
 	}
 
@@ -96,10 +99,21 @@ int main()
 		Matrix<double> ref = {2, {6.2, 10.4, 18.6, 4.4}};
 		a *= 2.0;
 		if(a.size() != 4)          { err("*= test [size]");  }
+		if(a.dim() != 2)          { err("*= test [dim]");  }
 		a -= ref;
 		if(norm_of_elements(a) > 1e-14)                    { err("*= test [value]");        }
 	}
 	
+	//Test /= scalar:
+	{
+		Matrix<double> ref = {2, {3.1, 5.2, 9.3, 2.2}};
+		Matrix<double> a = {2, {6.2, 10.4, 18.6, 4.4}};
+		a /= 2.0;
+		if(a.size() != 4)          { err("/= test [size]");  }
+		if(a.dim() != 2)          { err("/= test [dim]");  }
+		a -= ref;
+		if(norm_of_elements(a) > 1e-14)                    { err("/= test [value]");        }
+	}
 	//Add, sub, mult by matrix
 	//Test +=:
 	{
@@ -108,7 +122,9 @@ int main()
 		Matrix<double> ref = {2, {10.2, 20.4, 20.6, 3.2}};
 	    a += b;
 		if(a.size() != 4)                              { err("+= test [size]");         }
+		if(a.dim() != 2)                              { err("+= test [dim]");         }
 		if(b.size() != 4)                              { err("+= test [src size]");     }
+		if(b.dim() != 2)                              { err("+= test [src dim]");     }
 		a -= ref;
 		if(norm_of_elements(a) > 1e-14)                    { err("+= test [value]");        }
 	}
@@ -119,7 +135,9 @@ int main()
 		Matrix<double> ref = {2, {2.1, 3.2, 6.3, 1.0}};
 		a -= b;
 		if(a.size() != 4)                            { err("-= test [size]");         }
+		if(a.dim() != 2)                            { err("-= test [dim]");         }
 		if(b.size() != 4)                            { err("-= test [src size]");     }
+		if(b.dim() != 2)                            { err("-= test [src dim]");     }
 		a -= ref;
 		if(norm_of_elements(a) > 1e-14)                    { err("-= test [value]");        }
 	}
@@ -131,7 +149,9 @@ int main()
 		Matrix<double> ref = {2, {31.1, 27, 11.6, 10.8}};
 		a *= b;
 		if(a.size() != 4)                            { err("*= test [size]");         }
+		if(a.dim() != 2)                            { err("*= test [dim]");         }
 		if(b.size() != 4)                            { err("*= test [src size]");     }
+		if(b.dim() != 2)                            { err("*= test [src dim]");     }
 		a -= ref;
 		if(norm_of_elements(a) > 1e-14)                    { err("*= test [value]");        }
 	}
@@ -145,8 +165,11 @@ int main()
 		Matrix<double> c;
 	    c = a + b;
 		if(a.size() != 4)                              { err("+ test [size]");         }
+		if(a.dim() != 2)                              { err("+ test [dim]");         }
 		if(b.size() != 4)                              { err("+ test [src size]");     }
+		if(b.dim() != 2)                              { err("+ test [src dim]");     }
 		if(c.size() != 4)                              { err("+ test [result size]");     }
+		if(c.dim() != 2)                              { err("+ test [result dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("+ test [value]");        }
 	}
@@ -158,8 +181,11 @@ int main()
 		Matrix<double> c;
 	    c = a - b;
 		if(a.size() != 4)                            { err("- test [size]");         }
+		if(a.dim() != 2)                            { err("- test [dim]");         }
 		if(b.size() != 4)                            { err("- test [src size]");     }
+		if(b.dim() != 2)                            { err("- test [src dim]");     }
 		if(c.size() != 4)                            { err("- test [src size]");     }
+		if(c.dim() != 2)                            { err("- test [src dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("- test [value]");        }
 	}
@@ -172,8 +198,11 @@ int main()
 		Matrix<double> c;
 	    c = a * b;
 		if(a.size() != 4)                            { err("* test [size]");         }
+		if(a.dim() != 2)                            { err("* test [dim]");         }
 		if(b.size() != 4)                            { err("* test [src size]");     }
+		if(b.dim() != 2)                            { err("* test [src dim]");     }
 		if(c.size() != 4)                            { err("* test [src size]");     }
+		if(c.dim() != 2)                            { err("* test [src dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
 	}
@@ -185,7 +214,9 @@ int main()
 		Matrix<double> c;
 	    c = 2.0 * a;
 		if(a.size() != 4)                            { err("* lefttest [size]");         }
+		if(a.dim() != 2)                            { err("* lefttest [dim]");         }
 		if(c.size() != 4)                            { err("* left test [src size]");     }
+		if(c.dim() != 2)                            { err("* left test [src dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("* left test [value]");        }
 	}
@@ -197,7 +228,9 @@ int main()
 		Matrix<double> c;
 	    c = a * 2.0;
 		if(a.size() != 4)                            { err("* right test [size]");         }
+		if(a.dim() != 2)                            { err("* right test [dim]");         }
 		if(c.size() != 4)                            { err("* right test [src size]");     }
+		if(c.dim() != 2)                            { err("* right test [src dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("* right test [value]");        }
 	}
@@ -209,7 +242,9 @@ int main()
 		Matrix<double> c;
 	    c = a / 2.0;
 		if(a.size() != 4)                            { err("/ test [size]");         }
+		if(a.dim() != 2)                            { err("/ test [dim]");         }
 		if(c.size() != 4)                            { err("/ test [src size]");     }
+		if(c.dim() != 2)                            { err("/ test [src dim]");     }
 		c -= ref;
 		if(norm_of_elements(c) > 1e-14)                    { err("/ test [value]");        }
 	}
