@@ -53,7 +53,7 @@ class Matrix
 	//Dimension of the matrix
 	int dim() const
 	{
-		return static_cast<unsigned int>(sqrt(data.size()));
+		return N;
 	}
 	
 	//Number of elements of the Matrix:
@@ -64,25 +64,24 @@ class Matrix
 
 
 	//Function initialization
-/*
 	template<typename F>
 	Matrix(F f, int n)
 	{
-		data.resize(n);
+		data.resize(N*N);
 		for(int i=0; i<n; ++i){ data[i] = f(i); }
 	}
-*/
-	//Size initialization
+
+	//Size initializationW
 	Matrix( unsigned int M ) : N{M}
 	{
-		for(unsigned int i=0; i<N*N; ++i){ data.push_back(0); }
+		data.resize(N*N);
 	}
 
 	//List initialization
 	Matrix( unsigned int M, std::initializer_list<T> const& il ) : N{M}, data{il}
 	{
-		if(sqrt(data.size()) < N) { std::cout << "Error: less values than expected!" << std::endl; std::exit(-1); }
-		if(sqrt(data.size()) > N) { std::cout << "Error: more values than expected!" << std::endl; std::exit(-1); }
+		if(data.size() < N*N) { std::cout << "Error: less values than expected!" << std::endl; std::exit(-1); }
+		if(data.size() > N*N) { std::cout << "Error: more values than expected!" << std::endl; std::exit(-1); }
 	}
 
 	//Add, sub, mult, div by scalar
@@ -105,15 +104,11 @@ class Matrix
 		return *this;
 	}
 	//div
-	Matrix<T>& operator/= (T const& scl)
-	{
-		detail::transform_Matrix1(*this, *this, [=](T const& x){ return x / scl;} );
-		return *this;
-	}
 
 	//Add, sub, mult, div with other matrix
 	Matrix<T>& operator*= (Matrix<T> const& cpy)
 	{
+		T temp = 0;
 		std::vector<T> res(cpy.dim());
 		for(int i=0; i<cpy.dim();i++)
 		{
@@ -121,12 +116,14 @@ class Matrix
 			{
 				for(int k=0; k<cpy.dim();k++)
 				{
-					res[j] += (*this)[N*i + k] * cpy[N*k + j];
+					temp += (*this)(i,k) * cpy(k,j);
 				}
+				res[j] = temp;
+				temp = 0;
 			}
 			for(int l=0; l<cpy.dim();l++)
 			{
-				(*this)[N*i + l] = res[l];
+				(*this)(i,l) = res[l];
 				res[l] = 0;
 			}
 		}
@@ -142,12 +139,6 @@ class Matrix
 	Matrix<T>& operator-= (Matrix<T> const& cpy)
 	{
 		detail::transform_Matrix2(*this, cpy, *this, sub);
-		return *this;
-	}
-
-	Matrix<T>& operator/= (Matrix<T> const& cpy)
-	{
-		detail::transform_Matrix2(*this, cpy, *this, divide);
 		return *this;
 	}
 
@@ -176,7 +167,7 @@ class Matrix
 };
 
 template<typename T> 
-T length( Matrix<T>const& v )
+T norm_of_elements( Matrix<T>const& v )
 {
 	return std::sqrt(std::accumulate(v.cbegin(), v.cend(), static_cast<T>(0), [](T const& acc, T const& x){ return acc + x*x; }));
 }
@@ -240,35 +231,6 @@ Matrix<T>&& operator-( Matrix<T>&& v1, Matrix<T>&& v2 )
 	detail::transform_Matrix2(v1, v2, v1, sub );
 	return std::move(v1);
 }
-// /Matrix
-template<typename T>
-Matrix<T> operator/( Matrix<T> const& v1, Matrix<T> const& v2 )
-{
-	Matrix<T> result(v1.dim());
-	detail::transform_Matrix2(v1, v2, result, divide );
-	return result;
-}
-
-template<typename T>
-Matrix<T>&& operator/( Matrix<T>&& v1, Matrix<T> const& v2 )
-{
-	detail::transform_Matrix2(v1, v2, v1, divide);
-	return std::move(v1);
-}
-
-template<typename T>
-Matrix<T>&& operator/( Matrix<T> const& v1, Matrix<T>&& v2 )
-{
-	detail::transform_Matrix2(v1, v2, v2, divide );
-	return std::move(v2);
-}
-
-template<typename T>
-Matrix<T>&& operator/( Matrix<T>&& v1, Matrix<T>&& v2 )
-{
-	detail::transform_Matrix2(v1, v2, v1, divide );
-	return std::move(v1);
-}
 
 //*Matrix
 template<typename T>
@@ -276,14 +238,17 @@ Matrix<T> operator*( Matrix<T> const& v1, Matrix<T> const& v2 )
 {
 	int N = v1.dim();
 	Matrix<T> result(N);
+	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
 			for(int k=0; k<N;k++)
 			{
-				result[N*i + j] += v1[N*i + k] * v2[N*k + j];
+				temp += v1(i,k) * v2(k,j);
 			}
+			result(i,j) = temp;
+			temp = 0;
 		}
 	}
 	return result;
@@ -294,22 +259,121 @@ Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T> const& v2 )
 {
 	std::vector<T> res(v2.dim());
 	int N = v2.dim();
+	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
 			for(int k=0; k<N;k++)
 			{
-				res[j] += v1[N*i + k] * v2[N*k + j];
+				temp += v1(i,k) * v2(k,j);
 			}
+			res[j] = temp;
+			temp = 0;
 		}
 		for(int l=0; l<N;l++)
 		{
-			v1[N*i + l] = res[l];
-			res[l] = 0;
+			v1(i,l) = res[l];
 		}
 	}
 	return std::move(v1);
+}
+
+template<typename T>
+Matrix<T>&& operator*( Matrix<T> const& v1, Matrix<T> && v2 )
+{
+	std::vector<T> res(v1.dim());
+	int N = v1.dim();
+	T temp = 0;
+	for(int i=0; i<N;i++)
+	{
+		for(int j=0; j<N;j++)
+		{
+			for(int k=0; k<N;k++)
+			{
+				temp += v1(i,k) * v2(k,j);
+			}
+			res[j] = temp;
+			temp = 0;
+		}
+		for(int l=0; l<N;l++)
+		{
+			v2(i,l) = res[l];
+		}
+	}
+	return std::move(v2);
+}
+
+
+template<typename T>
+Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T>&& v2 )
+{
+	std::vector<T> res(v1.dim());
+	int N = v1.dim();
+	T temp = 0;
+	for(int i=0; i<N;i++)
+	{
+		for(int j=0; j<N;j++)
+		{
+			for(int k=0; k<N;k++)
+			{
+				temp += v1(i,k) * v2(k,j);
+			}
+			res[j] = temp;
+			temp = 0;
+		}
+		for(int l=0; l<N;l++)
+		{
+			v2(i,l) = res[l];
+		}
+	}
+	return std::move(v2);
+}
+
+//scalar mult
+template<typename T>
+Matrix<T> operator*(Matrix<T> const& v, T const& scl)
+{
+	Matrix<T> result(v.dim());
+	detail::transform_Matrix1(v, result, [=](T const& x){ return x * scl; });
+	return result;
+}
+
+template<typename T>
+Matrix<T>&& operator*(Matrix<T>&& v, T const& scl)
+{
+	detail::transform_Matrix1(v, v, [=](T const& x){ return x * scl; });
+	return std::move(v);
+}
+
+template<typename T>
+Matrix<T> operator*(T const& scl, Matrix<T> const& v)
+{
+	Matrix<T> result(v.dim());
+	detail::transform_Matrix1(v, result, [=](T const& x){ return scl * x; });
+	return result;
+}
+
+template<typename T>
+Matrix<T>&& operator*(T const& scl, Matrix<T>&& v)
+{
+	detail::transform_Matrix1(v, v, [=](T const& x){ return scl * x; });
+	return std::move(v);
+}
+// div scalar
+template<typename T>
+Matrix<T> operator/(Matrix<T> const& v, T const& scl)
+{
+	Matrix<T> result(v.dim());
+	detail::transform_Matrix1(v, result, [=](T const& x){ return x / scl; });
+	return result;
+}
+
+template<typename T>
+Matrix<T>&& operator/(Matrix<T>&& v, T const& scl)
+{
+	detail::transform_Matrix1(v, v, [=](T const& x){ return x / scl; });
+	return std::move(v);
 }
 
 template<typename T>
