@@ -267,6 +267,18 @@ int main()
 	}
 
 	//>> test
+	{
+		Matrix<double> ref = {2, {3.1, 5.2, 1.0, 2.2}};
+		Matrix<double> a;
+		std::stringstream ss;
+		std::string temp;
+		ss << "2\n";
+		ss << "3.1 5.2 1.0 2.2";
+		ss >> a;
+		if(a[0] != ref[0] && a[1] != ref[1] && a[2] != ref[2] && a[3] != ref[3]) { err(">> test [elements]"); }
+		if(a.dim() != 2) {err(">> test [dim]");}
+		if(a.size() != 4) {err(">> test [size]");}
+	}
 
 	return 0;
 }
