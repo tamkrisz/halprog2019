@@ -76,6 +76,11 @@ class Matrix
 		data.resize(N*N);
 	}
 
+	auto resize(int M)
+	{
+		data.resize(N*N);
+		N = M;
+	}
 	//List initialization
 	Matrix( unsigned int M, std::initializer_list<T> const& il ) : N{M}, data{il}
 	{
@@ -368,6 +373,7 @@ Matrix<T>&& operator/(Matrix<T>&& v, T const& scl)
 	return std::move(v);
 }
 
+//ostream
 template<typename T>
 std::ostream& operator<< (std::ostream& o, const Matrix<T>& m)
 {	
@@ -381,4 +387,22 @@ std::ostream& operator<< (std::ostream& o, const Matrix<T>& m)
 		o << std::endl;
 	}
 return o;
+}
+
+
+//istream
+template<typename T>
+std::istream& operator>>( std::istream& s, Matrix<T>& m )
+{	
+	std::string temp;
+	std::getline(s, temp, '\n');
+	int N = std::stoi(temp);
+	m.resize(N);
+
+	for(int i=0;i<N*N;i++)
+	{
+		std::getline(s, temp, ' ');
+		m[i] = std::stod(temp);
+	}
+return s;
 }
