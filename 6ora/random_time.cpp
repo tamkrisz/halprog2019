@@ -20,11 +20,12 @@ int main()
     double min = 1000000;
     double max = 0;
     int N = 100;
-    for(int l=9;l<17;l++)
+    std::vector<int> sizes = {500,1000,1500,2000};
+    for(int l=0;l<sizes.size();l++)
     {
-        N = pow(10,0.2*l);
+        N = sizes[l];
         Matrix<double> a(N);
-        Matrix<double> b(N);
+        Matrix<double> b(N);    
         Matrix<double> c(N);
         for(int k=0;k<20;k++)
         {
@@ -42,6 +43,7 @@ int main()
         }
         
         myfile << N << " " << min << " " << max << std::endl;
+        std::cout << N << " " << min << " " << max << std::endl;
         min = 1000000;
     }
 }
