@@ -337,35 +337,31 @@ int main()
 		Matrix<double> b   = {2, {5.0, 2.0, 3.0, 4.0}};
 		Matrix<double> ref = {2, {31.1, 27, 11.6, 10.8}};
 		Matrix<double> c;
-	    c = std::move(a) * std::move(b);
-	/*	if(a.size() != 4)                            { err("* test [size]");         }
+	    c = a * std::move(b);
+		if(a.size() != 4)                            { err("* test [size]");         }
 		if(a.dim() != 2)                            { err("* test [dim]");         }
 		if(b.size() != 0)                            { err("* test [src size]");     }
 		if(b.dim() != 0)                            { err("* test [src dim]");     }
-		if(c.size() != 4)                            { err("* test [src size]");     }
-		if(c.dim() != 2)                            { err("* test [src dim]");     }
-		*/
-	//	c -= ref;
-		//std::cout << a;
-		//std::cout << std::move(b);
-	//	std::cout << c;
-	//	if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
+		if(c.size() != 4)                            { err("* test [res size]");     }
+		if(c.dim() != 2)                            { err("* test [res dim]");     }
+		c -= ref;
+		if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
 	}
-
+	//move(a,b)
 	{
 		Matrix<double> a = {2, {3.1, 5.2, 1.0, 2.2}};
 		Matrix<double> b   = {2, {5.0, 2.0, 3.0, 4.0}};
 		Matrix<double> ref = {2, {31.1, 27, 11.6, 10.8}};
 		Matrix<double> c;
 	    c = std::move(a) * std::move(b);
-		if(a.size() != 0)                            { err("* test [size]");         }
-		if(a.dim() != 0)                            { err("* test [dim]");         }
-		if(b.size() != 4)                            { err("* test [src size]");     }
-		if(b.dim() != 2)                            { err("* test [src dim]");     }
-		if(c.size() != 4)                            { err("* test [src size]");     }
-		if(c.dim() != 2)                            { err("* test [src dim]");     }
+		if(a.size() != 4)                            { err("* test [size]");         }
+		if(a.dim() != 2)                            { err("* test [dim]");         }
+		if(b.size() != 0)                            { err("* test [src size]");     }
+		if(b.dim() != 0)                            { err("* test [src dim]");     }
+		if(c.size() != 4)                            { err("* test [res size]");     }
+		if(c.dim() != 2)                            { err("* test [res dim]");     }
 		c -= ref;
-//			if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
+		if(norm_of_elements(c) > 1e-14)                    { err("* test [value]");        }
 	}
 	//Test left *:
 	{
