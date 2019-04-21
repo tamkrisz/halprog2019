@@ -37,7 +37,10 @@ class Matrix
 	//<< és >> operatort külön tesztelni
 	Matrix() = default;
 	Matrix( Matrix const& ) = default;
-	Matrix( Matrix && ) = default;
+	Matrix( Matrix && m) : data{std::move(m.data)}, N{std::move(N)}
+	{
+		m.N = 0;
+	}
 
 	//Function call operator for reading and writing:
 	T&       operator[]( int i )       { return data[i]; }
@@ -45,8 +48,26 @@ class Matrix
 	T& operator()(int i, int j) { return data[N*i + j]; };
 	T const& operator()(int i, int j) const { return data[N*i+j]; };
 	//Copy and Move assignment operators implemented by the compiler:
-	Matrix<T>& operator=(Matrix const&) = default;
-	Matrix<T>& operator=(Matrix &&) = default;
+	Matrix<T>& operator=(Matrix const& m)
+	{
+		if(this != &m)
+		{
+			N = m.N;
+			data = m.data;
+		}
+		return *this;
+	}
+
+	Matrix<T>& operator=(Matrix && m)
+	{
+		if(this != &m)
+		{
+			N = m.N;
+			data = std::move(m.data);
+			m.N = 0;
+		}
+		return *this;
+	}
 
 
 	//Dimension of the matrix
@@ -64,10 +85,10 @@ class Matrix
 
 	//Function initialization
 	template<typename F>
-	Matrix(F f, int n)
+	Matrix(F f, int M) : N{M}
 	{
 		data.resize(N*N);
-		for(int i=0; i<n; ++i){ data[i] = f(i); }
+		for(int i=0; i<N; ++i){ data[i] = f(i); }
 	}
 
 	//Size initializationW
@@ -76,10 +97,10 @@ class Matrix
 		data.resize(N*N);
 	}
 
-	auto resize(int M)
+	void resize(int M)
 	{
-		data.resize(N*N);
 		N = M;
+		data.resize(N*N);
 	}
 	//List initialization
 	Matrix( unsigned int M, std::initializer_list<T> const& il ) : N{M}, data{il}
@@ -105,12 +126,13 @@ class Matrix
 	//matrix mul
 	Matrix<T>& operator*= (Matrix<T> const& cpy)
 	{
-		T temp = 0;
+		
 		std::vector<T> res(cpy.dim());
 		for(int i=0; i<cpy.dim();i++)
 		{
 			for(int j=0; j<cpy.dim();j++)
 			{
+				T temp = 0;
 				for(int k=0; k<cpy.dim();k++)
 				{
 					temp += (*this)(i,k) * cpy(k,j);
@@ -121,7 +143,6 @@ class Matrix
 			for(int l=0; l<cpy.dim();l++)
 			{
 				(*this)(i,l) = res[l];
-				res[l] = 0;
 			}
 		}
 		return *this;
@@ -159,8 +180,6 @@ class Matrix
 	{
 		return data.cend();
 	}
-
-
 };
 
 template<typename T> 
@@ -235,11 +254,11 @@ Matrix<T> operator*( Matrix<T> const& v1, Matrix<T> const& v2 )
 {
 	int N = v1.dim();
 	Matrix<T> result(N);
-	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
+			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
 				temp += v1(i,k) * v2(k,j);
@@ -256,11 +275,11 @@ Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T> const& v2 )
 {
 	std::vector<T> res(v2.dim());
 	int N = v2.dim();
-	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
+			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
 				temp += v1(i,k) * v2(k,j);
@@ -281,11 +300,11 @@ Matrix<T>&& operator*( Matrix<T> const& v1, Matrix<T> && v2 )
 {
 	std::vector<T> res(v1.dim());
 	int N = v1.dim();
-	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
+			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
 				temp += v1(i,k) * v2(k,j);
@@ -307,11 +326,11 @@ Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T>&& v2 )
 {
 	std::vector<T> res(v1.dim());
 	int N = v1.dim();
-	T temp = 0;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N;j++)
 		{
+			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
 				temp += v1(i,k) * v2(k,j);
@@ -324,10 +343,10 @@ Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T>&& v2 )
 			v2(i,l) = res[l];
 		}
 	}
-	return std::move(v2);
+	return std::move(v1);
 }
 
-//scalar mult
+//scalar mult right
 template<typename T>
 Matrix<T> operator*(Matrix<T> const& v, T const& scl)
 {
@@ -343,6 +362,7 @@ Matrix<T>&& operator*(Matrix<T>&& v, T const& scl)
 	return std::move(v);
 }
 
+//scalar mult left
 template<typename T>
 Matrix<T> operator*(T const& scl, Matrix<T> const& v)
 {
@@ -378,6 +398,7 @@ template<typename T>
 std::ostream& operator<< (std::ostream& o, const Matrix<T>& m)
 {	
 	int N = m.dim();
+	o << N << std::endl;
 	for(int i=0; i<N;i++)
 	{
 		for(int j=0; j<N; j++)
@@ -394,15 +415,29 @@ return o;
 template<typename T>
 std::istream& operator>>( std::istream& s, Matrix<T>& m )
 {	
+	auto restore_stream = [state = s.rdstate(), pos = s.tellg(), &s](){ s.seekg(pos); s.setstate(state); };
 	std::string temp;
-	std::getline(s, temp, '\n');
-	int N = std::stoi(temp);
-	m.resize(N);
+	std::vector<T> temp_vec;
 
+	std::getline(s, temp, '\n');
+	if(temp.size() == 0){ restore_stream(); return s; }	
+
+	int N = std::stoi(temp);
+	
+	while(std::getline(s, temp, ' '))
+	{
+		if(temp.size() == 0){ restore_stream(); return s; }	
+		temp_vec.push_back(static_cast<T>(std::stod(temp)));
+	}
+
+	if(temp_vec.size() > N*N) { std::cout << "Error: more input values than expected!" << std::endl; std::exit(-1); }
+	if(temp_vec.size() < N*N) { std::cout << "Error: less input values than expected!" << std::endl; std::exit(-1); }
+
+	m.resize(N);
 	for(int i=0;i<N*N;i++)
 	{
-		std::getline(s, temp, ' ');
-		m[i] = std::stod(temp);
+		m[i] = temp_vec[i];
 	}
+	
 return s;
 }
