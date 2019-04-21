@@ -48,15 +48,7 @@ class Matrix
 	T& operator()(int i, int j) { return data[N*i + j]; };
 	T const& operator()(int i, int j) const { return data[N*i+j]; };
 	//Copy and Move assignment operators implemented by the compiler:
-	Matrix<T>& operator=(Matrix const& m)
-	{
-		if(this != &m)
-		{
-			N = m.N;
-			data = m.data;
-		}
-		return *this;
-	}
+	Matrix<T>& operator=(Matrix const&) = default;
 
 	Matrix<T>& operator=(Matrix && m)
 	{
@@ -307,14 +299,14 @@ Matrix<T>&& operator*( Matrix<T> const& v1, Matrix<T> && v2 )
 			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
-				temp += v1(i,k) * v2(k,j);
+				temp += v1(j,k) * v2(k,i);
 			}
 			res[j] = temp;
 			temp = 0;
 		}
 		for(int l=0; l<N;l++)
 		{
-			v2(i,l) = res[l];
+			v2(l,i) = res[l];
 		}
 	}
 	return std::move(v2);
@@ -333,17 +325,17 @@ Matrix<T>&& operator*( Matrix<T>&& v1, Matrix<T>&& v2 )
 			T temp = 0;
 			for(int k=0; k<N;k++)
 			{
-				temp += v1(i,k) * v2(k,j);
+				temp += v1(j,k) * v2(k,i);
 			}
 			res[j] = temp;
 			temp = 0;
 		}
 		for(int l=0; l<N;l++)
 		{
-			v2(i,l) = res[l];
+			v2(l,i) = res[l];
 		}
 	}
-	return std::move(v1);
+	return std::move(v2);
 }
 
 //scalar mult right
